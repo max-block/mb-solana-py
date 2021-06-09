@@ -1,0 +1,11 @@
+accounts: |
+  8rpW9PZo8VHCypEX2FasXSkT8pTqYKRALDeqb4yWaL2B
+  A2eLwm6mxPHnZwwkFGaQYnp63rqDtKqCxFRJqikM5fvc
+
+tokens: |
+  CdRxVuX9xV7He78tCEB3pfFhi3rSSuv9HZBmv5BweH1k
+  8PbyegbNAcpVG1sgKwPpXJoLqASmNgfJ22JGQ4xz8rd9
+
+nodes: |
+  https://solana-api.projectserum.com
+  https://api.mainnet-beta.solana.com

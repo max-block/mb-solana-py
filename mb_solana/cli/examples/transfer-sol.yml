@@ -1,0 +1,8 @@
+from_address: BRbUFbMNPYq3bwFW6JmJAtAiTtYkLmHr4EwBt6vj8iGJ
+private_key: 4ta5m7Mjuz5Wx9ch2aPySD74cE37A61KbmQ19KBuhqYjeZNxQvERws6TKqmuvxSCGnCfFE4D8ur5Q45PaJxcmQnv
+amount: 1.2 # in SOL
+recipients:
+  - GawsA2WmuPpmj9H1djXLLFssx2xsvca5v8UQpNzoyWtD
+
+nodes: |
+  https://testnet.solana.com

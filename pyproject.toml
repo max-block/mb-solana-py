@@ -1,0 +1,29 @@
+[tool.black]
+line-length = 130
+target_version = ["py39"]
+include = '''
+(
+    ^/tests/.*[.]py$
+  | ^/mb_solana/.*[.]py$
+  | ^/setup[.]py
+)
+'''
+exclude = '''
+(
+     __pycache__
+     | ^/.venv
+     | ^/.mypy_cache
+     | ^/*.egg-info
+     | ^/build
+     | ^/dist
+)
+'''
+
+[tool.isort]
+line_length = 130
+use_parentheses = "True"
+include_trailing_comma = "True"
+multi_line_output = 3
+default_section = "THIRDPARTY"
+known_first_party = "mb_solana"
+sections = "FUTURE,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"

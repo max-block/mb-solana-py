@@ -1,0 +1,48 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 3.9.2
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-builtins
+          - flake8-bugbear
+          - flake8-comprehensions
+          - flake8-logging-format
+          - flake8-commas
+          - flake8-print
+          - flake8-tidy-imports
+
+  - repo: https://github.com/psf/black
+    rev: 21.5b1
+    hooks:
+      - id: black
+
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: v5.8.0
+    hooks:
+      - id: isort
+
+  - repo: https://github.com/humitos/mirrors-autoflake
+    rev: v1.3
+    hooks:
+      - id: autoflake
+        args: ['--in-place', '--remove-all-unused-imports']
+
+
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.0
+    hooks:
+      - id: bandit
+        args: [-v, --skip, "B311", -r, -x, "tests", "mb_solana"]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.812
+    hooks:
+      - id: mypy
