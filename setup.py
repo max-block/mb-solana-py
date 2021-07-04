@@ -28,7 +28,7 @@ setuptools.setup(
         "pydantic==1.8.2",
         "toml==0.10.2",
         "solana==0.9.2",
-        "mb-commons==1.0.1",
+        "mb-commons",
     ],
     extras_require={
         "dev": [
