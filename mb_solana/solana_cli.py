@@ -43,11 +43,14 @@ class Stake(BaseModel):
     withdrawer_address: str = Field(..., alias="withdrawer")
     vote_address: Optional[str] = Field(None, alias="delegatedVoteAccountAddress")
     balance: float = Field(..., alias="accountBalance")
+    delegated: Optional[float] = Field(None, alias="delegatedStake")
+    active: Optional[float] = Field(None, alias="activeStake")
     lock_time: Optional[int] = Field(None, alias="unixTimestamp")
 
-    @validator("balance")
-    def balance_validator(cls, v):
-        return v / 1_000_000_000
+    @validator("balance", "delegated", "active")
+    def from_lamports_to_sol(cls, v):
+        if v:
+            return v / 1_000_000_000
 
 
 def balance(
@@ -69,6 +72,7 @@ def balance(
         return Result(error=str(e), data=data)
 
 
+# noinspection DuplicatedCode
 def transfer(
     *,
     recipient: str,
@@ -143,22 +147,6 @@ def get_validators_info(
         return Result(ok=validators, data=data)
     except Exception as e:
         return Result(error=str(e), data=data)
-
-
-def get_stake_account(
-    *,
-    address: str,
-    solana_dir="",
-    url="localhost",
-    ssh_host: Optional[str] = None,
-    ssh_key_path: Optional[str] = None,
-    timeout=60,
-) -> Result[StakeAccount]:
-    # TODO: finish it!
-    solana_dir = _solana_dir(solana_dir)
-    cmd = f"{solana_dir}solana stake-account {address} --output json -u {url} 2>/dev/null"
-    res = _exec_cmd(cmd, ssh_host, ssh_key_path, timeout)
-    return Result(data=res)
 
 
 def get_vote_account_rewards(
