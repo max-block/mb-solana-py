@@ -52,6 +52,9 @@ class Stake(BaseModel):
         if v:
             return v / 1_000_000_000
 
+    class Config:
+        allow_population_by_field_name = True
+
 
 def balance(
     *,
