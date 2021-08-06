@@ -27,7 +27,7 @@ setuptools.setup(
         "Jinja2==3.0.1",
         "pydantic==1.8.2",
         "toml==0.10.2",
-        "solana==0.11.1",
+        "solana==0.10.0",
         "mb-commons",
     ],
     extras_require={
