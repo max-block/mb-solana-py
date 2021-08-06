@@ -28,7 +28,7 @@ def _http_call(node: str, data: dict, timeout: int, proxy: Optional[str]) -> Res
         return res.to_error(f"exception: {str(e)}")
 
 
-def get_inflation_reward(node: str, address: str, epoch: Optional[int] = None, timeout=10, proxy=None) -> Result[int]:
+def _remove_me_get_inflation_reward(node: str, address: str, epoch: Optional[int] = None, timeout=10, proxy=None) -> Result[int]:
     """Returns reward in lamports"""
     params: list[Any] = [[address]]
     if epoch:
@@ -44,7 +44,18 @@ def get_inflation_reward(node: str, address: str, epoch: Optional[int] = None, t
         return Result(error=f"exception: {str(e)}", data=res.dict())
 
 
+def get_balance(node: str, address: str, timeout=10, proxy=None) -> Result[int]:
+    """Returns balance in lamports"""
+    params = [address]
+    res = rpc_call(node=node, method="getBalance", params=params, timeout=timeout, proxy=proxy)
+    if res.is_error():
+        return res
+    try:
+        res.ok = res.ok["value"]
+        return res
+    except Exception as e:
+        return Result(error=f"exception: {str(e)}", data=res.dict())
+
+
 if __name__ == "__main__":
-    # node_url = "https://api.mainnet-beta.solana.com"
-    # print(get_inflation_reward(node_url, test_address, 170).dict())
     pass
