@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from decimal import Decimal
 from typing import Literal, Optional, Union
 
-import dotenv
 import pydash
 from mb_commons import Result, md, shell
 from mb_commons.shell import CommandResult
@@ -292,6 +291,4 @@ def _solana_dir(solana_dir: str) -> str:
 
 
 if __name__ == "__main__":
-    dotenv.load_dotenv()
-    ADDRESS = os.getenv("ADDRESS_1")
-    # pprint(get_stake_account(address=ADDRESS, url="mainnet-beta").dict())  # type:ignore
+    pass
