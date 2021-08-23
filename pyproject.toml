@@ -1,5 +1,5 @@
 [tool.black]
-line-length = 130
+line-length = 120
 target_version = ["py39"]
 include = '''
 (
@@ -20,7 +20,7 @@ exclude = '''
 '''
 
 [tool.isort]
-line_length = 130
+line_length = 120
 use_parentheses = "True"
 include_trailing_comma = "True"
 multi_line_output = 3

@@ -28,7 +28,13 @@ def _http_call(node: str, data: dict, timeout: int, proxy: Optional[str]) -> Res
         return res.to_error(f"exception: {str(e)}")
 
 
-def _remove_me_get_inflation_reward(node: str, address: str, epoch: Optional[int] = None, timeout=10, proxy=None) -> Result[int]:
+def _remove_me_get_inflation_reward(
+    node: str,
+    address: str,
+    epoch: Optional[int] = None,
+    timeout=10,
+    proxy=None,
+) -> Result[int]:
     """Returns reward in lamports"""
     params: list[Any] = [[address]]
     if epoch:

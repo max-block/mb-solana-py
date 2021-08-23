@@ -8,7 +8,7 @@ dist: clean
 	python3 setup.py sdist bdist_wheel
 
 
-upload: dist
+release: dist
     git diff-index --quiet --cached HEAD --
     twine upload dist/*
     git tag -a 'v{{version}}' -m 'v{{version}}'

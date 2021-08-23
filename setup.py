@@ -34,8 +34,8 @@ setuptools.setup(
         "dev": [
             "pytest==6.2.4",
             "pytest-xdist==2.3.0",
-            "pre-commit==2.13.0",
-            "wheel==0.36.2",
+            "pre-commit==2.14.0",
+            "wheel==0.37.0",
             "twine==3.4.2",
             "python-dotenv==0.19.0",
         ],

@@ -35,7 +35,9 @@ def transfer_sol(
         try:
             client = Client(node or random.choice(nodes))  # type:ignore
             tx = Transaction(fee_payer=acc.public_key())
-            ti = transfer(TransferParams(from_pubkey=acc.public_key(), to_pubkey=PublicKey(recipient_address), lamports=lamports))
+            ti = transfer(
+                TransferParams(from_pubkey=acc.public_key(), to_pubkey=PublicKey(recipient_address), lamports=lamports),
+            )
             tx.add(ti)
             res = client.send_transaction(tx, acc)
             data = res
@@ -48,7 +50,13 @@ def transfer_sol(
     return Result(error=error, data=data)
 
 
-def is_empty_account(*, address: str, node: Optional[str] = None, nodes: Optional[list[str]] = None, attempts=3) -> Result[bool]:
+def is_empty_account(
+    *,
+    address: str,
+    node: Optional[str] = None,
+    nodes: Optional[list[str]] = None,
+    attempts=3,
+) -> Result[bool]:
     if not node and not nodes:
         raise ValueError("node or nodes must be set")
     error = None

@@ -1,8 +1,11 @@
 import json
+import os
+import random
 from dataclasses import dataclass
 from decimal import Decimal
 from typing import Literal, Optional, Union
 
+import dotenv
 import pydash
 from mb_commons import Result, md, shell
 from mb_commons.shell import CommandResult
@@ -19,13 +22,6 @@ class ValidatorInfo:
     details: Optional[str]
 
 
-@dataclass
-class StakeAccount:
-    balance: int
-    withdrawer: str
-    delegated_vote_account: Optional[str]
-
-
 class BlockProduction(BaseModel):
     class Leader(BaseModel):
         validator: str = Field(..., alias="identityPubkey")
@@ -36,6 +32,19 @@ class BlockProduction(BaseModel):
     start_slot: int
     end_slot: int
     leaders: list[Leader]
+
+
+class StakeAccount(BaseModel):
+    type: str = Field(..., alias="stakeType")
+    balance: float = Field(..., alias="accountBalance")
+    withdrawer: str
+    staker: str
+    vote: Optional[str] = Field(None, alias="delegatedVoteAccountAddress")
+
+    @validator("balance")
+    def from_lamports_to_sol(cls, v):
+        if v:
+            return v / 1_000_000_000
 
 
 class Stake(BaseModel):
@@ -75,8 +84,28 @@ def balance(
         return Result(error=str(e), data=data)
 
 
+def get_stake_account(
+    *,
+    address: str,
+    solana_dir="",
+    url="localhost",
+    ssh_host: Optional[str] = None,
+    ssh_key_path: Optional[str] = None,
+    timeout=60,
+) -> Result[StakeAccount]:
+    solana_dir = _solana_dir(solana_dir)
+    cmd = f"{solana_dir}solana stake-account --output json -u {url} {address}"
+    res = _exec_cmd(cmd, ssh_host, ssh_key_path, timeout)
+    data = md(cmd, res.stdout, res.stderr)
+    try:
+        json_res = json.loads(res.stdout)
+        return Result(ok=StakeAccount(**json_res), data=data)
+    except Exception as e:
+        return Result(error=str(e), data=data)
+
+
 # noinspection DuplicatedCode
-def transfer(
+def transfer_with_private_key_file(
     *,
     recipient: str,
     amount: Decimal,
@@ -97,6 +126,40 @@ def transfer(
         return Result(ok=json_res["signature"], data=data)
     except Exception as e:
         return Result(error=str(e), data=data)
+
+
+def transfer_with_private_key_str(
+    *,
+    recipient: str,
+    amount: Decimal,
+    private_key: str,
+    tmp_dir_path: str,
+    solana_dir="",
+    url="localhost",
+    ssh_host: Optional[str] = None,
+    ssh_key_path: Optional[str] = None,
+    timeout=60,
+) -> Result[str]:
+    # make private_key file
+    private_key_path = f"{tmp_dir_path}/solana__{random.randint(1, 10_000_000_000)}.json"
+    with open(private_key_path, "w") as f:
+        f.write(private_key)
+
+    try:
+        solana_dir = _solana_dir(solana_dir)
+        cmd = (
+            f"{solana_dir}solana transfer {recipient} {amount} --from {private_key_path} --fee-payer {private_key_path}"
+        )
+        cmd += f" -u {url} --output json"
+        res = _exec_cmd(cmd, ssh_host, ssh_key_path, timeout)
+        data = md(cmd, res.stdout, res.stderr)
+        try:
+            json_res = json.loads(res.stdout)
+            return Result(ok=json_res["signature"], data=data)
+        except Exception as e:
+            return Result(error=str(e), data=data)
+    finally:
+        os.remove(private_key_path)
 
 
 def withdraw_from_vote_account(
@@ -219,7 +282,7 @@ def get_stakes(
 def _exec_cmd(cmd: str, ssh_host: Optional[str], ssh_key_path: Optional[str], timeout: int) -> CommandResult:
     if ssh_host:
         return shell.run_ssh_command(ssh_host, cmd, ssh_key_path, timeout=timeout)
-    shell.run_command(cmd, timeout=timeout)
+    return shell.run_command(cmd, timeout=timeout)
 
 
 def _solana_dir(solana_dir: str) -> str:
@@ -229,4 +292,6 @@ def _solana_dir(solana_dir: str) -> str:
 
 
 if __name__ == "__main__":
-    pass
+    dotenv.load_dotenv()
+    ADDRESS = os.getenv("ADDRESS_1")
+    # pprint(get_stake_account(address=ADDRESS, url="mainnet-beta").dict())  # type:ignore
