@@ -113,10 +113,13 @@ def transfer_with_private_key_file(
     url="localhost",
     ssh_host: Optional[str] = None,
     ssh_key_path: Optional[str] = None,
+    allow_unfunded_recipient=True,
     timeout=60,
 ) -> Result[str]:
     solana_dir = _solana_dir(solana_dir)
     cmd = f"{solana_dir}solana transfer {recipient} {amount} --from {private_key_path} --fee-payer {private_key_path}"
+    if allow_unfunded_recipient:
+        cmd += " --allow-unfunded-recipient"
     cmd += f" -u {url} --output json"
     res = _exec_cmd(cmd, ssh_host, ssh_key_path, timeout)
     data = md(cmd, res.stdout, res.stderr)
@@ -145,18 +148,16 @@ def transfer_with_private_key_str(
         f.write(private_key)
 
     try:
-        solana_dir = _solana_dir(solana_dir)
-        cmd = (
-            f"{solana_dir}solana transfer {recipient} {amount} --from {private_key_path} --fee-payer {private_key_path}"
+        return transfer_with_private_key_file(
+            recipient=recipient,
+            amount=amount,
+            private_key_path=private_key_path,
+            solana_dir=solana_dir,
+            url=url,
+            ssh_host=ssh_host,
+            ssh_key_path=ssh_key_path,
+            timeout=timeout,
         )
-        cmd += f" -u {url} --output json"
-        res = _exec_cmd(cmd, ssh_host, ssh_key_path, timeout)
-        data = md(cmd, res.stdout, res.stderr)
-        try:
-            json_res = json.loads(res.stdout)
-            return Result(ok=json_res["signature"], data=data)
-        except Exception as e:
-            return Result(error=str(e), data=data)
     finally:
         os.remove(private_key_path)
 
