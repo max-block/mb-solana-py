@@ -27,6 +27,9 @@ class BlockProduction(BaseModel):
         produced: int = Field(..., alias="blocksProduced")
         skipped: int = Field(..., alias="skippedSlots")
 
+        class Config:
+            allow_population_by_field_name = True
+
     epoch: int
     start_slot: int
     end_slot: int
