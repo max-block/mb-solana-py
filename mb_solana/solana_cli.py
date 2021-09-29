@@ -67,7 +67,7 @@ class Stake(BaseModel):
         allow_population_by_field_name = True
 
 
-def balance(
+def get_balance(
     *,
     address: str,
     solana_dir="",
@@ -82,6 +82,24 @@ def balance(
     data = md(cmd, res.stdout, res.stderr)
     try:
         return Result(ok=Decimal(res.stdout.replace("SOL", "").strip()), data=data)
+    except Exception as e:
+        return Result(error=str(e), data=data)
+
+
+def get_slot(
+    *,
+    solana_dir="",
+    url="localhost",
+    ssh_host: Optional[str] = None,
+    ssh_key_path: Optional[str] = None,
+    timeout=60,
+) -> Result[int]:
+    solana_dir = _solana_dir(solana_dir)
+    cmd = f"{solana_dir}solana slot -u {url}"
+    res = _exec_cmd(cmd, ssh_host, ssh_key_path, timeout)
+    data = md(cmd, res.stdout, res.stderr)
+    try:
+        return Result(ok=int(res.stdout), data=data)
     except Exception as e:
         return Result(error=str(e), data=data)
 
