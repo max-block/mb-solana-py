@@ -24,6 +24,7 @@ class ValidatorInfo:
 class BlockProduction(BaseModel):
     class Leader(BaseModel):
         validator: str = Field(..., alias="identityPubkey")
+        leader: int = Field(..., alias="leaderSlots")
         produced: int = Field(..., alias="blocksProduced")
         skipped: int = Field(..., alias="skippedSlots")
 
