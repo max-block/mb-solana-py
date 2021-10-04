@@ -63,5 +63,21 @@ def get_balance(node: str, address: str, timeout=10, proxy=None) -> Result[int]:
         return Result(error=f"exception: {str(e)}", data=res.dict())
 
 
+def get_leader_scheduler(
+    node: str,
+    epoch: Optional[int] = None,
+    timeout=10,
+    proxy=None,
+) -> Result[dict[str, list[int]]]:
+    params = [epoch] if epoch else []
+    res = rpc_call(node=node, method="getLeaderSchedule", timeout=timeout, proxy=proxy, params=params)
+    if res.is_error():
+        return res
+    try:
+        return res
+    except Exception as e:
+        return Result(error=f"exception: {str(e)}", data=res.dict())
+
+
 if __name__ == "__main__":
     pass
