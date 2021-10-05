@@ -2,7 +2,7 @@ import click
 from click import Context
 
 from mb_solana import __version__
-from mb_solana.cli.cmd import accounts_cmd, balance_cmd, example_cmd, transfer_sol_cmd
+from mb_solana.cli.cmd import balance_cmd, example_cmd, generate_accounts_cmd, keypair_cmd, transfer_sol_cmd
 
 
 @click.group()
@@ -17,7 +17,8 @@ def cli(ctx: Context, config_, node: list[str]):
     ctx.obj["nodes"] = node
 
 
-cli.add_command(accounts_cmd.cli)
 cli.add_command(balance_cmd.cli)
 cli.add_command(example_cmd.cli)
+cli.add_command(generate_accounts_cmd.cli)
+cli.add_command(keypair_cmd.cli)
 cli.add_command(transfer_sol_cmd.cli)

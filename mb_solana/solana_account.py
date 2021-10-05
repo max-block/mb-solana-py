@@ -26,7 +26,7 @@ def generate_account() -> NewAccount:
     return NewAccount(public_key=public_key, private_key_base58=private_key_base58, private_key_arr=private_key_arr)
 
 
-def check_private_key(public_key_base58: str, private_key: Union[str, list[int]]) -> bool:
+def get_keypair(private_key: Union[str, list[int]]) -> Keypair:
     if isinstance(private_key, str):
         if "[" in private_key:
             private_key_ = [int(x) for x in private_key.replace("[", "").replace("]", "").split(",")]
@@ -34,9 +34,33 @@ def check_private_key(public_key_base58: str, private_key: Union[str, list[int]]
             private_key_ = base58.b58decode(private_key)
     else:
         private_key_ = private_key
+    return Keypair(PrivateKey(bytes(private_key_[:32])))
 
-    keypair = Keypair(PrivateKey(bytes(private_key_[:32])))
-    return keypair.public_key.to_base58().decode("utf-8") == public_key_base58
+
+def check_private_key(public_key_base58: str, private_key: Union[str, list[int]]) -> bool:
+    return get_keypair(private_key).public_key.to_base58().decode("utf-8") == public_key_base58
+
+
+def get_public_key(private_key: str) -> str:
+    if "[" in private_key:
+        private_key_ = [int(x) for x in private_key.replace("[", "").replace("]", "").split(",")]
+    else:
+        private_key_ = base58.b58decode(private_key)
+    return Keypair(PrivateKey(bytes(private_key_[:32]))).public_key.to_base58().decode()
+
+
+def get_private_key_base58(private_key: str) -> str:
+    keypair = get_keypair(private_key)
+    return base58.b58encode(keypair.secret_key).decode()
+
+
+def get_private_key_arr(private_key: str) -> list[int]:
+    keypair = get_keypair(private_key)
+    return list(x for x in keypair.secret_key)  # noqa
+
+
+def get_private_key_arr_str(private_key: str) -> str:
+    return f"[{','.join(str(x) for x in get_private_key_arr(private_key))}]"
 
 
 def is_empty_account(

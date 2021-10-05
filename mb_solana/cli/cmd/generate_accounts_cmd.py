@@ -4,7 +4,7 @@ from solana.account import Account
 from mb_solana.cli.helpers import print_json
 
 
-@click.command(name="accounts", help="Generate new accounts")
+@click.command(name="generate-accounts", help="Generate new accounts")
 @click.option("--limit", "-l", type=int, default=5)
 def cli(limit: int):
     result = {}
