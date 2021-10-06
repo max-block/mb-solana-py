@@ -24,7 +24,7 @@ setuptools.setup(
         "click==8.0.1",
         "click-aliases==1.0.1",
         "PyYAML==5.4.1",
-        "Jinja2==3.0.1",
+        "Jinja2==3.0.2",
         "pydantic==1.8.2",
         "toml==0.10.2",
         "solana==0.15.1",

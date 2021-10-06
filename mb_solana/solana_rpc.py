@@ -1,6 +1,16 @@
 from typing import Any, Optional
 
 from mb_commons import Result, hrequest
+from pydantic import BaseModel, Field
+
+
+class EpochInfo(BaseModel):
+    epoch: int
+    absolute_slot: int = Field(..., alias="absoluteSlot")
+    block_height: int = Field(..., alias="blockHeight")
+    slot_index: int = Field(..., alias="slotIndex")
+    slots_in_epoch: int = Field(..., alias="slotsInEpoch")
+    transaction_count: int = Field(..., alias="transactionCount")
 
 
 def rpc_call(*, node: str, method: str, params: list[Any], id_=1, timeout=10, proxy=None) -> Result:
@@ -63,14 +73,25 @@ def get_balance(node: str, address: str, timeout=10, proxy=None) -> Result[int]:
         return Result(error=f"exception: {str(e)}", data=res.dict())
 
 
+def get_epoch_info(node: str, epoch: Optional[int] = None, timeout=10, proxy=None) -> Result[EpochInfo]:
+    """getEpochInfo method"""
+    params = [epoch] if epoch else []
+    res = rpc_call(node=node, method="getEpochInfo", params=params, timeout=timeout, proxy=proxy)
+    if res.is_error():
+        return res
+    try:
+        res.ok = EpochInfo(**res.ok)
+        return res
+    except Exception as e:
+        return Result(error=f"exception: {str(e)}", data=res.dict())
+
+
 def get_leader_scheduler(
     node: str,
-    epoch: Optional[int] = None,
     timeout=10,
     proxy=None,
 ) -> Result[dict[str, list[int]]]:
-    params = [epoch] if epoch else []
-    res = rpc_call(node=node, method="getLeaderSchedule", timeout=timeout, proxy=proxy, params=params)
+    res = rpc_call(node=node, method="getLeaderSchedule", timeout=timeout, proxy=proxy, params=[])
     if res.is_error():
         return res
     try:

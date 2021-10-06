@@ -34,6 +34,8 @@ class BlockProduction(BaseModel):
     epoch: int
     start_slot: int
     end_slot: int
+    total_blocks_produced: int
+    total_slots_skipped: int
     leaders: list[Leader]
 
 

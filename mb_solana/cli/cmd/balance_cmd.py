@@ -38,8 +38,9 @@ def cli(ctx, config_path):
     print_config_and_exit(ctx, config)
     result = {"sol": _get_sol_balances(config.accounts, config.nodes)}
 
-    for token in config.tokens:
-        result[token] = _get_token_balances(token, config.accounts, config.nodes)
+    if config.tokens:
+        for token in config.tokens:
+            result[token] = _get_token_balances(token, config.accounts, config.nodes)
 
     print_json(result)
 
