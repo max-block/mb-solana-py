@@ -29,7 +29,7 @@ known_first_party = "mb_solana"
 sections = "FUTURE,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
 
 [tool.mypy]
-python_version = 3.9
+python_version = 3.10
 warn_no_return = false
 
 [tool.pytest.ini_options]
