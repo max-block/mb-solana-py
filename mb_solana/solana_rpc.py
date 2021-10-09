@@ -20,6 +20,23 @@ class ClusterNode(BaseModel):
     rpc: Optional[str]
 
 
+class VoteAccount(BaseModel):
+    class EpochCredits(BaseModel):
+        epoch: int
+        credits: int
+        previous_credits: int
+
+    validator: str
+    vote: str
+    commission: int
+    stake: int
+    credits: list[EpochCredits]
+    epoch_vote_account: bool
+    root_slot: int
+    last_vote: int
+    delinquent: bool
+
+
 def rpc_call(*, node: str, method: str, params: list[Any], id_=1, timeout=10, proxy=None) -> Result:
     data = {"jsonrpc": "2.0", "method": method, "params": params, "id": id_}
     if node.startswith("http"):
@@ -77,6 +94,54 @@ def get_cluster_nodes(node: str, timeout=30, proxy=None) -> Result[list[ClusterN
         return res
     try:
         res.ok = [ClusterNode(**n) for n in res.ok]
+        return res
+    except Exception as e:
+        return Result(error=f"exception: {str(e)}", data=res.dict())
+
+
+def get_vote_accounts(node: str, timeout=30, proxy=None) -> Result[list[VoteAccount]]:
+    res = rpc_call(node=node, method="getVoteAccounts", timeout=timeout, proxy=proxy, params=[])
+    if res.is_error():
+        return res
+    try:
+
+        result: list[VoteAccount] = []
+        for a in res.ok["current"]:
+            result.append(
+                VoteAccount(
+                    validator=a["nodePubkey"],
+                    vote=a["votePubkey"],
+                    commission=a["commission"],
+                    stake=a["activatedStake"],
+                    credits=[
+                        VoteAccount.EpochCredits(epoch=c[0], credits=c[1], previous_credits=c[2])
+                        for c in a["epochCredits"]
+                    ],
+                    delinquent=False,
+                    epoch_vote_account=a["epochVoteAccount"],
+                    root_slot=a["rootSlot"],
+                    last_vote=a["lastVote"],
+                ),
+            )
+        for a in res.ok["delinquent"]:
+            result.append(
+                VoteAccount(
+                    validator=a["nodePubkey"],
+                    vote=a["votePubkey"],
+                    commission=a["commission"],
+                    stake=a["activatedStake"],
+                    credits=[
+                        VoteAccount.EpochCredits(epoch=c[0], credits=c[1], previous_credits=c[2])
+                        for c in a["epochCredits"]
+                    ],
+                    delinquent=True,
+                    epoch_vote_account=a["epochVoteAccount"],
+                    root_slot=a["rootSlot"],
+                    last_vote=a["lastVote"],
+                ),
+            )
+        res.ok = result
+
         return res
     except Exception as e:
         return Result(error=f"exception: {str(e)}", data=res.dict())
