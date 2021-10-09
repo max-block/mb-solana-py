@@ -13,6 +13,13 @@ class EpochInfo(BaseModel):
     transaction_count: int = Field(..., alias="transactionCount")
 
 
+class ClusterNode(BaseModel):
+    pubkey: str
+    version: Optional[str]
+    gossip: Optional[str]
+    rpc: Optional[str]
+
+
 def rpc_call(*, node: str, method: str, params: list[Any], id_=1, timeout=10, proxy=None) -> Result:
     data = {"jsonrpc": "2.0", "method": method, "params": params, "id": id_}
     if node.startswith("http"):
@@ -38,28 +45,6 @@ def _http_call(node: str, data: dict, timeout: int, proxy: Optional[str]) -> Res
         return res.to_error(f"exception: {str(e)}")
 
 
-def _remove_me_get_inflation_reward(
-    node: str,
-    address: str,
-    epoch: Optional[int] = None,
-    timeout=10,
-    proxy=None,
-) -> Result[int]:
-    """Returns reward in lamports"""
-    params: list[Any] = [[address]]
-    if epoch:
-        params.append({"epoch": epoch})
-    res = rpc_call(node=node, method="getInflationReward", params=params, timeout=timeout, proxy=proxy)
-    if res.is_error():
-        return res
-
-    try:
-        res.ok = res.ok[0]["amount"]
-        return res
-    except Exception as e:
-        return Result(error=f"exception: {str(e)}", data=res.dict())
-
-
 def get_balance(node: str, address: str, timeout=10, proxy=None) -> Result[int]:
     """Returns balance in lamports"""
     params = [address]
@@ -81,6 +66,17 @@ def get_epoch_info(node: str, epoch: Optional[int] = None, timeout=10, proxy=Non
         return res
     try:
         res.ok = EpochInfo(**res.ok)
+        return res
+    except Exception as e:
+        return Result(error=f"exception: {str(e)}", data=res.dict())
+
+
+def get_cluster_nodes(node: str, timeout=30, proxy=None) -> Result[list[ClusterNode]]:
+    res = rpc_call(node=node, method="getClusterNodes", timeout=timeout, proxy=proxy, params=[])
+    if res.is_error():
+        return res
+    try:
+        res.ok = [ClusterNode(**n) for n in res.ok]
         return res
     except Exception as e:
         return Result(error=f"exception: {str(e)}", data=res.dict())
