@@ -75,6 +75,17 @@ def get_balance(node: str, address: str, timeout=10, proxy=None) -> Result[int]:
         return Result(error=f"exception: {str(e)}", data=res.dict())
 
 
+def get_slot(node: str, timeout=10, proxy=None) -> Result[int]:
+    res = rpc_call(node=node, method="getSlot", params=[], timeout=timeout, proxy=proxy)
+    if res.is_error():
+        return res
+    try:
+        res.ok = res.ok
+        return res
+    except Exception as e:
+        return Result(error=f"exception: {str(e)}", data=res.dict())
+
+
 def get_epoch_info(node: str, epoch: Optional[int] = None, timeout=10, proxy=None) -> Result[EpochInfo]:
     """getEpochInfo method"""
     params = [epoch] if epoch else []
