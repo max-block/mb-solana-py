@@ -21,13 +21,13 @@ setuptools.setup(
     python_requires=">=3.9",
     packages=["mb_solana"],
     install_requires=[
-        "click==8.0.2",
+        "click==8.0.3",
         "click-aliases==1.0.1",
         "PyYAML==5.4.1",
         "Jinja2==3.0.2",
         "pydantic==1.8.2",
         "toml==0.10.2",
-        "solana==0.16.0",
+        "solana==0.17.0",
         "mb-commons",
     ],
     extras_require={

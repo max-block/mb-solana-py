@@ -160,6 +160,7 @@ def get_vote_accounts(node: str, timeout=30, proxy=None) -> Result[list[VoteAcco
 
 def get_leader_scheduler(
     node: str,
+    slot: Optional[int] = None,
     timeout=10,
     proxy=None,
 ) -> Result[dict[str, list[int]]]:
