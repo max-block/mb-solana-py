@@ -164,7 +164,7 @@ def get_leader_scheduler(
     timeout=10,
     proxy=None,
 ) -> Result[dict[str, list[int]]]:
-    res = rpc_call(node=node, method="getLeaderSchedule", timeout=timeout, proxy=proxy, params=[])
+    res = rpc_call(node=node, method="getLeaderSchedule", timeout=timeout, proxy=proxy, params=[slot])
     if res.is_error():
         return res
     try:
