@@ -24,9 +24,9 @@ class ValidatorInfo:
 class BlockProduction(BaseModel):
     class Leader(BaseModel):
         validator: str = Field(..., alias="identityPubkey")
-        leader: int = Field(..., alias="leaderSlots")
-        produced: int = Field(..., alias="blocksProduced")
-        skipped: int = Field(..., alias="skippedSlots")
+        leader_slots: int = Field(..., alias="leaderSlots")
+        block_produced: int = Field(..., alias="blocksProduced")
+        block_skipped: int = Field(..., alias="skippedSlots")
 
         class Config:
             allow_population_by_field_name = True
@@ -34,8 +34,8 @@ class BlockProduction(BaseModel):
     epoch: int
     start_slot: int
     end_slot: int
-    total_produced: int = Field(..., alias="total_blocks_produced")
-    total_skipped: int = Field(..., alias="total_slots_skipped")
+    total_block_produced: int = Field(..., alias="total_blocks_produced")
+    total_block_skipped: int = Field(..., alias="total_slots_skipped")
     leaders: list[Leader]
 
 
