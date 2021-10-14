@@ -34,8 +34,8 @@ class BlockProduction(BaseModel):
     epoch: int
     start_slot: int
     end_slot: int
-    total_blocks_produced: int
-    total_slots_skipped: int
+    total_produced: int = Field(..., alias="total_blocks_produced")
+    total_skipped: int = Field(..., alias="total_slots_skipped")
     leaders: list[Leader]
 
 
