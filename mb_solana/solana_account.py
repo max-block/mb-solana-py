@@ -1,18 +1,17 @@
 import random
-from dataclasses import dataclass
 from typing import Optional, Union
 
 import base58
 import pydash
 from mb_commons import Result
 from nacl.public import PrivateKey
+from pydantic import BaseModel
 from solana.keypair import Keypair
 from solana.publickey import PublicKey
 from solana.rpc.api import Client
 
 
-@dataclass
-class NewAccount:
+class NewAccount(BaseModel):
     public_key: str
     private_key_base58: str
     private_key_arr: list[int]

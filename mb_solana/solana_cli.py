@@ -1,7 +1,6 @@
 import json
 import os
 import random
-from dataclasses import dataclass
 from decimal import Decimal
 from typing import Literal, Optional, Union
 
@@ -11,8 +10,7 @@ from mb_commons.shell import CommandResult
 from pydantic import BaseModel, Field, validator
 
 
-@dataclass
-class ValidatorInfo:
+class ValidatorInfo(BaseModel):
     identity_address: str
     info_address: str
     name: Optional[str]
