@@ -21,24 +21,6 @@ class ValidatorInfo:
     details: Optional[str]
 
 
-class BlockProduction(BaseModel):
-    class Leader(BaseModel):
-        validator: str = Field(..., alias="identityPubkey")
-        leader_slots: int = Field(..., alias="leaderSlots")
-        block_produced: int = Field(..., alias="blocksProduced")
-        block_skipped: int = Field(..., alias="skippedSlots")
-
-        class Config:
-            allow_population_by_field_name = True
-
-    epoch: int
-    start_slot: int
-    end_slot: int
-    total_block_produced: int = Field(..., alias="total_blocks_produced")
-    total_block_skipped: int = Field(..., alias="total_slots_skipped")
-    leaders: list[Leader]
-
-
 class StakeAccount(BaseModel):
     type: str = Field(..., alias="stakeType")
     balance: float = Field(..., alias="accountBalance")
@@ -85,24 +67,6 @@ def get_balance(
     data = md(cmd, res.stdout, res.stderr)
     try:
         return Result(ok=Decimal(res.stdout.replace("SOL", "").strip()), data=data)
-    except Exception as e:
-        return Result(error=str(e), data=data)
-
-
-def get_slot(
-    *,
-    solana_dir="",
-    url="localhost",
-    ssh_host: Optional[str] = None,
-    ssh_key_path: Optional[str] = None,
-    timeout=60,
-) -> Result[int]:
-    solana_dir = _solana_dir(solana_dir)
-    cmd = f"{solana_dir}solana slot -u {url}"
-    res = _exec_cmd(cmd, ssh_host, ssh_key_path, timeout)
-    data = md(cmd, res.stdout, res.stderr)
-    try:
-        return Result(ok=int(res.stdout), data=data)
     except Exception as e:
         return Result(error=str(e), data=data)
 
@@ -261,28 +225,6 @@ def get_vote_account_rewards(
         return Result(ok=rewards, data=data)
     except Exception as e:
         return Result(error=str(e), data=data)
-
-
-def get_block_production(
-    *,
-    solana_dir="",
-    url="localhost",
-    ssh_host: Optional[str] = None,
-    ssh_key_path: Optional[str] = None,
-    timeout=60,
-) -> Result[BlockProduction]:
-    solana_dir = _solana_dir(solana_dir)
-    cmd = f"{solana_dir}solana block-production --output json -u {url}"
-    res = _exec_cmd(cmd, ssh_host, ssh_key_path, timeout)
-    try:
-        stdout = res.stdout.strip()
-        data = {"stdout": res.stdout, "stderr": res.stderr}
-        if stdout.startswith("Note:") and "\n" in stdout:
-            data["note"] = stdout[: stdout.index("\n")]
-            stdout = stdout[stdout.index("\n") + 1 :]  # noqa
-        return Result(ok=BlockProduction(**json.loads(stdout)), data=data)
-    except Exception as e:
-        return Result(error=str(e), data={"stdout": res.stdout, "stderr": res.stderr})
 
 
 def get_stakes(

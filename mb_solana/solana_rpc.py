@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from mb_commons import Result, hrequest
+from mb_commons import Result, hrequest, md
 from pydantic import BaseModel, Field
 
 
@@ -35,6 +35,18 @@ class VoteAccount(BaseModel):
     root_slot: int
     last_vote: int
     delinquent: bool
+
+
+class BlockProduction(BaseModel):
+    class Leader(BaseModel):
+        address: str
+        produced: int
+        skipped: int
+
+    slot: int
+    first_slot: int
+    last_slot: int
+    leaders: list[Leader]
 
 
 def rpc_call(*, node: str, method: str, params: list[Any], id_=1, timeout=10, proxy=None) -> Result:
@@ -169,6 +181,22 @@ def get_leader_scheduler(
         return res
     try:
         return res
+    except Exception as e:
+        return Result(error=f"exception: {str(e)}", data=res.dict())
+
+
+def get_block_production(node: str, timeout=60, proxy=None) -> Result[BlockProduction]:
+    res = rpc_call(node=node, method="getBlockProduction", timeout=timeout, proxy=proxy, params=[])
+    if res.is_error():
+        return res
+    try:
+        slot = res.ok["context"]["slot"]
+        first_slot = res.ok["value"]["range"]["firstSlot"]
+        last_slot = res.ok["value"]["range"]["lastSlot"]
+        leaders = []
+        for address, (leader, produced) in res.ok["value"]["byIdentity"].items():
+            leaders.append(BlockProduction.Leader(address=address, produced=produced, skipped=leader - produced))
+        return Result(ok=BlockProduction(**md(slot, first_slot, last_slot, leaders)))
     except Exception as e:
         return Result(error=f"exception: {str(e)}", data=res.dict())
 
