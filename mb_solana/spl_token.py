@@ -15,6 +15,9 @@ def get_balance(node: str, owner_address: str, token_mint_address: str, token_ac
                 PublicKey(owner_address),
                 TokenAccountOpts(mint=PublicKey(token_mint_address)),
             )
+            if not res["result"]["value"]:
+                return Result(error="no_token_accounts")
+
             token_accounts = [PublicKey(a["pubkey"]) for a in res["result"]["value"]]
             balances = []
             for token_account in token_accounts:
