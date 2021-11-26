@@ -227,6 +227,7 @@ def get_vote_account_rewards(
 
 def get_stakes(
     *,
+    vote_address: str = "",
     solana_dir="",
     url="localhost",
     ssh_host: Optional[str] = None,
@@ -234,7 +235,7 @@ def get_stakes(
     timeout=60,
 ) -> Result[list[Stake]]:
     solana_dir = _solana_dir(solana_dir)
-    cmd = f"{solana_dir}solana stakes --output json -u {url}"
+    cmd = f"{solana_dir}solana stakes --output json -u {url} {vote_address}"
     res = _exec_cmd(cmd, ssh_host, ssh_key_path, timeout)
     data = {"stdout": res.stdout, "stderr": res.stderr}
     try:
