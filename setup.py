@@ -37,6 +37,7 @@ setuptools.setup(
             "pre-commit==2.16.0",
             "wheel==0.37.1",
             "twine==3.7.1",
+            "pip-audit==1.1.1",
         ],
     },
     entry_points={"console_scripts": ["mb-solana = mb_solana.cli:cli"]},
