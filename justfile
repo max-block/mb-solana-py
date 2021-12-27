@@ -7,7 +7,7 @@ clean:
 
 dist: clean
     pip-audit
-	python3 setup.py sdist bdist_wheel
+    python3 setup.py sdist bdist_wheel
 
 
 publish: dist
