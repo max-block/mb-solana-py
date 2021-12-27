@@ -3,7 +3,7 @@ from typing import Optional, Union
 
 import base58
 import pydash
-from mb_commons import Result
+from mb_std import Result
 from nacl.public import PrivateKey
 from pydantic import BaseModel
 from solana.keypair import Keypair

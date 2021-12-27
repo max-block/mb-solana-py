@@ -2,13 +2,13 @@ import random
 from decimal import Decimal
 from typing import Optional
 
-import base58
-from mb_commons import Result
-from solana.account import Account
+from mb_std import Result
 from solana.publickey import PublicKey
 from solana.rpc.api import Client
 from solana.system_program import TransferParams, transfer
 from solana.transaction import Transaction
+
+from mb_solana.solana_account import get_keypair
 
 
 def transfer_sol(
@@ -23,8 +23,9 @@ def transfer_sol(
 ) -> Result[str]:
     if not node and not nodes:
         raise ValueError("node or nodes must be set")
-    acc = Account(base58.b58decode(private_key_base58)[:32])
-    if str(acc.public_key()) != from_address:
+
+    acc = get_keypair(private_key_base58)
+    if acc.public_key != PublicKey(from_address):
         raise ValueError("from_address or private_key_base58 is invalid")
 
     lamports = int(amount_sol * 10 ** 9)
@@ -33,9 +34,9 @@ def transfer_sol(
     for _ in range(attempts):
         try:
             client = Client(node or random.choice(nodes))  # type:ignore
-            tx = Transaction(fee_payer=acc.public_key())
+            tx = Transaction(fee_payer=acc.public_key)
             ti = transfer(
-                TransferParams(from_pubkey=acc.public_key(), to_pubkey=PublicKey(recipient_address), lamports=lamports),
+                TransferParams(from_pubkey=acc.public_key, to_pubkey=PublicKey(recipient_address), lamports=lamports),
             )
             tx.add(ti)
             res = client.send_transaction(tx, acc)

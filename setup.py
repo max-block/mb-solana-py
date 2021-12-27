@@ -18,7 +18,7 @@ def find_version(*file_paths):
 setuptools.setup(
     name="mb-solana",
     version=find_version("mb_solana/__init__.py"),
-    python_requires=">=3.9",
+    python_requires=">=3.10",
     packages=["mb_solana"],
     install_requires=[
         "click==8.0.3",
@@ -27,17 +27,16 @@ setuptools.setup(
         "Jinja2",
         "pydantic==1.8.2",
         "toml==0.10.2",
-        "solana==0.18.3",
-        "mb-commons",
+        "solana==0.19.1",
+        "mb-std~=0.1",
     ],
     extras_require={
         "dev": [
             "pytest==6.2.5",
-            "pytest-xdist==2.4.0",
-            "pre-commit==2.15.0",
-            "wheel==0.37.0",
-            "twine==3.6.0",
-            "python-dotenv==0.19.2",
+            "pytest-xdist==2.5.0",
+            "pre-commit==2.16.0",
+            "wheel==0.37.1",
+            "twine==3.7.1",
         ],
     },
     entry_points={"console_scripts": ["mb-solana = mb_solana.cli:cli"]},

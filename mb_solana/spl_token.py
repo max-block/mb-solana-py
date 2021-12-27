@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Optional
 
-from mb_commons import Result
+from mb_std import Result
 from solana.publickey import PublicKey
 from solana.rpc.api import Client
 from solana.rpc.core import RPCException

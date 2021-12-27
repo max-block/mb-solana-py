@@ -2,7 +2,7 @@ import random
 from decimal import Decimal
 
 import click
-from mb_commons import str_to_list
+from mb_std import str_to_list
 from pydantic import StrictStr, validator
 
 from mb_solana import helpers

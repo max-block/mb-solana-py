@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from mb_commons import Result, hrequest, md
+from mb_std import Result, hrequest, md
 from pydantic import BaseModel, Field
 
 
@@ -137,8 +137,7 @@ def get_vote_accounts(node: str, timeout=30, proxy=None) -> Result[list[VoteAcco
                     commission=a["commission"],
                     stake=a["activatedStake"],
                     credits=[
-                        VoteAccount.EpochCredits(epoch=c[0], credits=c[1], previous_credits=c[2])
-                        for c in a["epochCredits"]
+                        VoteAccount.EpochCredits(epoch=c[0], credits=c[1], previous_credits=c[2]) for c in a["epochCredits"]
                     ],
                     delinquent=False,
                     epoch_vote_account=a["epochVoteAccount"],
@@ -154,8 +153,7 @@ def get_vote_accounts(node: str, timeout=30, proxy=None) -> Result[list[VoteAcco
                     commission=a["commission"],
                     stake=a["activatedStake"],
                     credits=[
-                        VoteAccount.EpochCredits(epoch=c[0], credits=c[1], previous_credits=c[2])
-                        for c in a["epochCredits"]
+                        VoteAccount.EpochCredits(epoch=c[0], credits=c[1], previous_credits=c[2]) for c in a["epochCredits"]
                     ],
                     delinquent=True,
                     epoch_vote_account=a["epochVoteAccount"],

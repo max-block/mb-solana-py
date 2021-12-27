@@ -3,7 +3,7 @@ from typing import Optional
 
 import click
 import pydash
-from mb_commons import str_to_list
+from mb_std import str_to_list
 from pydantic import StrictStr, validator
 from solana.publickey import PublicKey
 from solana.rpc.api import Client

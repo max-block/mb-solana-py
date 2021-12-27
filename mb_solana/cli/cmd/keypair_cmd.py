@@ -1,5 +1,5 @@
 import click
-from mb_commons import md
+from mb_std import md
 
 from mb_solana import solana_account
 from mb_solana.cli.helpers import print_json
