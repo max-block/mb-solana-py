@@ -27,7 +27,7 @@ setuptools.setup(
         "Jinja2",
         "pydantic==1.8.2",
         "toml==0.10.2",
-        "solana==0.18.3",  # don't upgrade to 0.18, it conflicts with websockets dep
+        "solana==0.19.1",
         "mb-std~=0.1",
     ],
     extras_require={
