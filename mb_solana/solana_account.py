@@ -1,5 +1,4 @@
 import random
-from typing import Optional, Union
 
 import base58
 import pydash
@@ -25,7 +24,7 @@ def generate_account() -> NewAccount:
     return NewAccount(public_key=public_key, private_key_base58=private_key_base58, private_key_arr=private_key_arr)
 
 
-def get_keypair(private_key: Union[str, list[int]]) -> Keypair:
+def get_keypair(private_key: str | list[int]) -> Keypair:
     if isinstance(private_key, str):
         if "[" in private_key:
             private_key_ = [int(x) for x in private_key.replace("[", "").replace("]", "").split(",")]
@@ -36,7 +35,7 @@ def get_keypair(private_key: Union[str, list[int]]) -> Keypair:
     return Keypair(PrivateKey(bytes(private_key_[:32])))
 
 
-def check_private_key(public_key_base58: str, private_key: Union[str, list[int]]) -> bool:
+def check_private_key(public_key_base58: str, private_key: str | list[int]) -> bool:
     return get_keypair(private_key).public_key.to_base58().decode("utf-8") == public_key_base58
 
 
@@ -62,13 +61,7 @@ def get_private_key_arr_str(private_key: str) -> str:
     return f"[{','.join(str(x) for x in get_private_key_arr(private_key))}]"
 
 
-def is_empty_account(
-    *,
-    address: str,
-    node: Optional[str] = None,
-    nodes: Optional[list[str]] = None,
-    attempts=3,
-) -> Result[bool]:
+def is_empty_account(*, address: str, node: str | None = None, nodes: list[str] | None = None, attempts=3) -> Result[bool]:
     if not node and not nodes:
         raise ValueError("node or nodes must be set")
     error = None

@@ -1,5 +1,4 @@
 from decimal import Decimal
-from typing import Optional
 
 from mb_std import Result
 from solana.publickey import PublicKey
@@ -12,7 +11,7 @@ from spl.token.constants import TOKEN_PROGRAM_ID
 from mb_solana import solana_account
 
 
-def get_balance(node: str, owner_address: str, token_mint_address: str, token_account: Optional[str] = None) -> Result[Decimal]:
+def get_balance(node: str, owner_address: str, token_mint_address: str, token_account: str | None = None) -> Result[Decimal]:
     try:
         client = Client(endpoint=node)
         if not token_account:

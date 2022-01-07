@@ -1,5 +1,4 @@
 import random
-from typing import Optional
 
 import click
 import pydash
@@ -15,7 +14,7 @@ from mb_solana.cli.helpers import BaseCmdConfig, parse_config, print_config_and_
 class Config(BaseCmdConfig):
     accounts: list[StrictStr]
     nodes: list[StrictStr]
-    tokens: Optional[list[StrictStr]] = None
+    tokens: list[StrictStr] | None = None
 
     @validator("accounts", "nodes", "tokens", pre=True)
     def to_list_validator(cls, v):
@@ -45,14 +44,14 @@ def cli(ctx, config_path):
     print_json(result)
 
 
-def _get_token_balances(token: str, accounts: list[str], nodes: list[str]) -> dict[str, Optional[float]]:
+def _get_token_balances(token: str, accounts: list[str], nodes: list[str]) -> dict[str, float | None]:
     result = {}
     for account in accounts:
         result[account] = _get_token_balance(token, account, nodes)
     return result
 
 
-def _get_token_balance(token: str, account: str, nodes: list[str]) -> Optional[float]:
+def _get_token_balance(token: str, account: str, nodes: list[str]) -> float | None:
     for _ in range(3):
         client = Client(random.choice(nodes))
         res = client.get_token_accounts_by_owner(PublicKey(account), TokenAccountOpts(mint=PublicKey(token)))
@@ -62,14 +61,14 @@ def _get_token_balance(token: str, account: str, nodes: list[str]) -> Optional[f
             return pydash.get(res, "result.value.uiAmount")
 
 
-def _get_sol_balances(accounts: list[str], nodes: list[str]) -> dict[str, Optional[float]]:
+def _get_sol_balances(accounts: list[str], nodes: list[str]) -> dict[str, float | None]:
     result = {}
     for account in accounts:
         result[account] = _get_balance(account, nodes)
     return result
 
 
-def _get_balance(account: str, nodes: list[str]) -> Optional[float]:
+def _get_balance(account: str, nodes: list[str]) -> float | None:
     for _ in range(3):
         client = Client(random.choice(nodes))
         value = pydash.get(client.get_balance(account), "result.value")

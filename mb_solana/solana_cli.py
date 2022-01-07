@@ -2,7 +2,7 @@ import json
 import os
 import random
 from decimal import Decimal
-from typing import Literal, Optional, Union
+from typing import Literal
 
 import pydash
 from mb_std import Result, md, shell
@@ -13,10 +13,10 @@ from pydantic import BaseModel, Field, validator
 class ValidatorInfo(BaseModel):
     identity_address: str
     info_address: str
-    name: Optional[str]
-    keybase: Optional[str]
-    website: Optional[str]
-    details: Optional[str]
+    name: str | None
+    keybase: str | None
+    website: str | None
+    details: str | None
 
 
 class StakeAccount(BaseModel):
@@ -24,7 +24,7 @@ class StakeAccount(BaseModel):
     balance: float = Field(..., alias="accountBalance")
     withdrawer: str
     staker: str
-    vote: Optional[str] = Field(None, alias="delegatedVoteAccountAddress")
+    vote: str | None = Field(None, alias="delegatedVoteAccountAddress")
 
     @validator("balance")
     def from_lamports_to_sol(cls, v):
@@ -35,11 +35,11 @@ class StakeAccount(BaseModel):
 class Stake(BaseModel):
     stake_address: str = Field(..., alias="stakePubkey")
     withdrawer_address: str = Field(..., alias="withdrawer")
-    vote_address: Optional[str] = Field(None, alias="delegatedVoteAccountAddress")
+    vote_address: str | None = Field(None, alias="delegatedVoteAccountAddress")
     balance: float = Field(..., alias="accountBalance")
-    delegated: Optional[float] = Field(None, alias="delegatedStake")
-    active: Optional[float] = Field(None, alias="activeStake")
-    lock_time: Optional[int] = Field(None, alias="unixTimestamp")
+    delegated: float | None = Field(None, alias="delegatedStake")
+    active: float | None = Field(None, alias="activeStake")
+    lock_time: int | None = Field(None, alias="unixTimestamp")
 
     @validator("balance", "delegated", "active")
     def from_lamports_to_sol(cls, v):
@@ -55,8 +55,8 @@ def get_balance(
     address: str,
     solana_dir="",
     url="localhost",
-    ssh_host: Optional[str] = None,
-    ssh_key_path: Optional[str] = None,
+    ssh_host: str | None = None,
+    ssh_key_path: str | None = None,
     timeout=60,
 ) -> Result[Decimal]:
     solana_dir = _solana_dir(solana_dir)
@@ -74,8 +74,8 @@ def get_stake_account(
     address: str,
     solana_dir="",
     url="localhost",
-    ssh_host: Optional[str] = None,
-    ssh_key_path: Optional[str] = None,
+    ssh_host: str | None = None,
+    ssh_key_path: str | None = None,
     timeout=60,
 ) -> Result[StakeAccount]:
     solana_dir = _solana_dir(solana_dir)
@@ -97,8 +97,8 @@ def transfer_with_private_key_file(
     private_key_path: str,
     solana_dir="",
     url="localhost",
-    ssh_host: Optional[str] = None,
-    ssh_key_path: Optional[str] = None,
+    ssh_host: str | None = None,
+    ssh_key_path: str | None = None,
     allow_unfunded_recipient=True,
     timeout=60,
 ) -> Result[str]:
@@ -124,8 +124,8 @@ def transfer_with_private_key_str(
     tmp_dir_path: str,
     solana_dir="",
     url="localhost",
-    ssh_host: Optional[str] = None,
-    ssh_key_path: Optional[str] = None,
+    ssh_host: str | None = None,
+    ssh_key_path: str | None = None,
     timeout=60,
 ) -> Result[str]:
     # make private_key file
@@ -151,13 +151,13 @@ def transfer_with_private_key_str(
 def withdraw_from_vote_account(
     *,
     recipient: str,
-    amount: Union[Decimal, Literal["ALL"]],
+    amount: Decimal | Literal["ALL"],
     vote_key_path: str,
     fee_payer_key_path: str,
     solana_dir="",
     url="localhost",
-    ssh_host: Optional[str] = None,
-    ssh_key_path: Optional[str] = None,
+    ssh_host: str | None = None,
+    ssh_key_path: str | None = None,
     timeout=60,
 ) -> Result[str]:
     solana_dir = _solana_dir(solana_dir)
@@ -175,8 +175,8 @@ def get_validators_info(
     *,
     solana_dir="",
     url="localhost",
-    ssh_host: Optional[str] = None,
-    ssh_key_path: Optional[str] = None,
+    ssh_host: str | None = None,
+    ssh_key_path: str | None = None,
     timeout=60,
 ) -> Result[list[ValidatorInfo]]:
     solana_dir = _solana_dir(solana_dir)
@@ -206,8 +206,8 @@ def get_vote_account_rewards(
     address: str,
     solana_dir="",
     url="localhost",
-    ssh_host: Optional[str] = None,
-    ssh_key_path: Optional[str] = None,
+    ssh_host: str | None = None,
+    ssh_key_path: str | None = None,
     num_rewards_epochs=10,
     timeout=60,
 ) -> Result[dict[int, float]]:
@@ -230,8 +230,8 @@ def get_stakes(
     vote_address: str = "",
     solana_dir="",
     url="localhost",
-    ssh_host: Optional[str] = None,
-    ssh_key_path: Optional[str] = None,
+    ssh_host: str | None = None,
+    ssh_key_path: str | None = None,
     timeout=60,
 ) -> Result[list[Stake]]:
     solana_dir = _solana_dir(solana_dir)
@@ -244,7 +244,7 @@ def get_stakes(
         return Result(error=str(e), data=data)
 
 
-def _exec_cmd(cmd: str, ssh_host: Optional[str], ssh_key_path: Optional[str], timeout: int) -> CommandResult:
+def _exec_cmd(cmd: str, ssh_host: str | None, ssh_key_path: str | None, timeout: int) -> CommandResult:
     if ssh_host:
         return shell.run_ssh_command(ssh_host, cmd, ssh_key_path, timeout=timeout)
     return shell.run_command(cmd, timeout=timeout)

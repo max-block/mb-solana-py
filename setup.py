@@ -25,10 +25,9 @@ setuptools.setup(
         "click-aliases==1.0.1",
         "PyYAML==5.4.1",
         "Jinja2",
-        "pydantic==1.8.2",
         "toml==0.10.2",
-        "solana==0.19.1",
-        "mb-std~=0.1",
+        "solana==0.20.0",
+        "mb-std~=0.2",
     ],
     extras_require={
         "dev": [

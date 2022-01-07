@@ -5,7 +5,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from enum import Enum
 from json import JSONEncoder
-from typing import Callable, TypeVar, Union
+from typing import Callable, TypeVar
 
 import click
 import toml
@@ -99,5 +99,5 @@ def print_config_and_exit(ctx: Context, config):
         exit(0)
 
 
-def print_json(obj: Union[dict, list, BaseModel]):
+def print_json(obj: dict | list | BaseModel):
     click.echo(json.dumps(obj, indent=2, cls=CustomJSONEncoder))

@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 
 from mb_std import Result, hrequest, md
 from pydantic import BaseModel, Field
@@ -15,9 +15,9 @@ class EpochInfo(BaseModel):
 
 class ClusterNode(BaseModel):
     pubkey: str
-    version: Optional[str]
-    gossip: Optional[str]
-    rpc: Optional[str]
+    version: str | None
+    gossip: str | None
+    rpc: str | None
 
 
 class VoteAccount(BaseModel):
@@ -57,7 +57,7 @@ def rpc_call(*, node: str, method: str, params: list[Any], id_=1, timeout=10, pr
         raise NotImplementedError("ws is not implemented")
 
 
-def _http_call(node: str, data: dict, timeout: int, proxy: Optional[str]) -> Result:
+def _http_call(node: str, data: dict, timeout: int, proxy: str | None) -> Result:
     res = hrequest(node, method="POST", proxy=proxy, timeout=timeout, params=data, json_params=True)
     try:
         if res.is_error():
@@ -98,7 +98,7 @@ def get_slot(node: str, timeout=10, proxy=None) -> Result[int]:
         return Result(error=f"exception: {str(e)}", data=res.dict())
 
 
-def get_epoch_info(node: str, epoch: Optional[int] = None, timeout=10, proxy=None) -> Result[EpochInfo]:
+def get_epoch_info(node: str, epoch: int | None = None, timeout=10, proxy=None) -> Result[EpochInfo]:
     """getEpochInfo method"""
     params = [epoch] if epoch else []
     res = rpc_call(node=node, method="getEpochInfo", params=params, timeout=timeout, proxy=proxy)
@@ -168,12 +168,7 @@ def get_vote_accounts(node: str, timeout=30, proxy=None) -> Result[list[VoteAcco
         return Result(error=f"exception: {str(e)}", data=res.dict())
 
 
-def get_leader_scheduler(
-    node: str,
-    slot: Optional[int] = None,
-    timeout=10,
-    proxy=None,
-) -> Result[dict[str, list[int]]]:
+def get_leader_scheduler(node: str, slot: int | None = None, timeout=10, proxy=None) -> Result[dict[str, list[int]]]:
     res = rpc_call(node=node, method="getLeaderSchedule", timeout=timeout, proxy=proxy, params=[slot])
     if res.is_error():
         return res

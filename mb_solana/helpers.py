@@ -1,6 +1,5 @@
 import random
 from decimal import Decimal
-from typing import Optional
 
 from mb_std import Result
 from solana.publickey import PublicKey
@@ -17,8 +16,8 @@ def transfer_sol(
     private_key_base58: str,
     recipient_address: str,
     amount_sol: Decimal,
-    node: Optional[str] = None,
-    nodes: Optional[list[str]] = None,
+    node: str | None = None,
+    nodes: list[str] | None = None,
     attempts=3,
 ) -> Result[str]:
     if not node and not nodes:
