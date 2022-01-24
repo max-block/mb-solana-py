@@ -6,6 +6,7 @@ from mb_solana.solana_rpc import rpc_call
 
 class BlockTxCount(BaseModel):
     slot: int
+    block_time: int | None
     vote_tx_ok: int
     vote_tx_error: int
     non_vote_tx_ok: int
@@ -27,6 +28,7 @@ def calc_block_tx_count(node: str, slot: int, timeout=10, proxy=None) -> Result[
     ]
     try:
         txs = res.ok["transactions"]
+        block_time = res.ok["blockTime"]
         for tx in txs:
             is_error = tx["meta"]["err"] is not None
             account_keys = tx["transaction"]["message"]["accountKeys"]
@@ -48,6 +50,7 @@ def calc_block_tx_count(node: str, slot: int, timeout=10, proxy=None) -> Result[
                 vote_tx_error=vote_tx_error,
                 non_vote_tx_ok=non_vote_tx_ok,
                 non_vote_tx_error=non_vote_tx_error,
+                block_time=block_time,
             ),
         )
     except Exception as e:
