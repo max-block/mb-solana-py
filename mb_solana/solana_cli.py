@@ -219,7 +219,7 @@ def get_vote_account_rewards(
     try:
         rewards: dict[int, float] = {}
         for r in reversed(json.loads(res.stdout)["epochRewards"]):
-            rewards[r["epoch"]] = r["amount"] / 10 ** 9
+            rewards[r["epoch"]] = r["amount"] / 10**9
         return Result(ok=rewards, data=data)
     except Exception as e:
         return Result(error=str(e), data=data)

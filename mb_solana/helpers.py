@@ -27,7 +27,7 @@ def transfer_sol(
     if acc.public_key != PublicKey(from_address):
         raise ValueError("from_address or private_key_base58 is invalid")
 
-    lamports = int(amount_sol * 10 ** 9)
+    lamports = int(amount_sol * 10**9)
     error = None
     data = None
     for _ in range(attempts):

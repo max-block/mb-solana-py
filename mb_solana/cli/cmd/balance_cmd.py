@@ -73,4 +73,4 @@ def _get_balance(account: str, nodes: list[str]) -> float | None:
         client = Client(random.choice(nodes))
         value = pydash.get(client.get_balance(account), "result.value")
         if value:
-            return value / 10 ** 9
+            return value / 10**9

@@ -27,15 +27,15 @@ setuptools.setup(
         "Jinja2",
         "toml==0.10.2",
         "solana==0.21.0",
-        "mb-std~=0.2",
+        "mb-std~=0.3",
     ],
     extras_require={
         "dev": [
-            "pytest==6.2.5",
+            "pytest==7.0.0",
             "pytest-xdist==2.5.0",
             "pre-commit==2.17.0",
             "wheel==0.37.1",
-            "twine==3.7.1",
+            "twine==3.8.0",
             "pip-audit==1.1.2",
         ],
     },

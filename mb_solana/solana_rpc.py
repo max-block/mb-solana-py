@@ -1,6 +1,6 @@
 from typing import Any
 
-from mb_std import Result, hrequest, md
+from mb_std import Result, hr, md
 from pydantic import BaseModel, Field
 
 
@@ -58,7 +58,7 @@ def rpc_call(*, node: str, method: str, params: list[Any], id_=1, timeout=10, pr
 
 
 def _http_call(node: str, data: dict, timeout: int, proxy: str | None) -> Result:
-    res = hrequest(node, method="POST", proxy=proxy, timeout=timeout, params=data, json_params=True)
+    res = hr(node, method="POST", proxy=proxy, timeout=timeout, params=data, json_params=True)
     try:
         if res.is_error():
             return res.to_error()
