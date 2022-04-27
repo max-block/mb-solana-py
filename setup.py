@@ -25,6 +25,7 @@ setuptools.setup(
         "click-aliases==1.0.1",
         "PyYAML==5.4.1",
         "Jinja2",
+        "base58",
         "toml==0.10.2",
         "solana==0.23.2",
         "mb-std~=0.4",
