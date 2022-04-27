@@ -47,3 +47,7 @@ def transfer_sol(
             error = str(e)
 
     return Result(error=error, data=data)
+
+
+def lamports_to_sol(lamports: int, ndigits=4) -> Decimal:
+    return Decimal(str(round(lamports / 10**9, ndigits=ndigits)))
