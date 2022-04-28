@@ -32,7 +32,7 @@ setuptools.setup(
     ],
     extras_require={
         "dev": [
-            "pytest==7.1.1",
+            "pytest==7.1.2",
             "pytest-xdist==2.5.0",
             "pre-commit==2.18.1",
             "wheel==0.37.1",
