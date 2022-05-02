@@ -27,7 +27,7 @@ setuptools.setup(
         "Jinja2",
         "base58",
         "toml==0.10.2",
-        "solana==0.23.2",
+        "solana==0.23.3",
         "mb-std~=0.4",
     ],
     extras_require={

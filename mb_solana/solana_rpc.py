@@ -194,5 +194,5 @@ def get_block_production(node: str, timeout=60, proxy=None) -> Result[BlockProdu
         return Result(error=f"exception: {str(e)}", data=res.dict())
 
 
-def get_transaction(node: str, signature: str, timeout=60, proxy=None) -> Result[dict | None]:
-    return rpc_call(node=node, method="getTransaction", timeout=timeout, proxy=proxy, params=[signature])
+def get_transaction(node: str, signature: str, encoding="json", timeout=60, proxy=None) -> Result[dict | None]:
+    return rpc_call(node=node, method="getTransaction", timeout=timeout, proxy=proxy, params=[signature, encoding])
