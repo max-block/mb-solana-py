@@ -34,10 +34,10 @@ setuptools.setup(
         "dev": [
             "pytest==7.1.2",
             "pytest-xdist==2.5.0",
-            "pre-commit==2.18.1",
+            "pre-commit==2.19.0",
             "wheel==0.37.1",
             "twine==4.0.0",
-            "pip-audit==2.1.1",
+            "pip-audit==2.3.1",
         ],
     },
     entry_points={"console_scripts": ["mb-solana = mb_solana.cli:cli"]},
