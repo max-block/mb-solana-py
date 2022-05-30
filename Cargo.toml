@@ -1,6 +1,6 @@
 [package]
 name = "mb-solana"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2021"
 description = "my solana lib helpers and cli tools"
 license = "Unlicense"

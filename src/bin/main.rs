@@ -32,7 +32,8 @@ struct NewCommand {
 /// Get keypair from a private key
 #[derive(Parser)]
 struct PrivateCommand {
-    private_key: String,
+    #[clap(short = 'p')]
+    private_key: Option<String>,
 }
 
 /// Get m/44'/501'/0'/0' keypair from a mnemonic
