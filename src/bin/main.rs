@@ -16,10 +16,12 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     Generate(GenerateCommand),
-    Keypair(KeypairCommand),
+    KeypairFromPrivate(KeypairFromPrivateCommand),
+    KeypairFromMnemonic(KeypairFromMnemonicCommand),
     Split,
 }
 
+/// Generate new keypair
 #[derive(Parser)]
 struct GenerateCommand {
     #[clap(long, default_value_t = 1)]
@@ -29,8 +31,15 @@ struct GenerateCommand {
 }
 
 #[derive(Parser)]
-struct KeypairCommand {
+struct KeypairFromPrivateCommand {
     private_key: String,
+}
+
+/// Get m/44'/501'/0'/0' keypair from a mnemonic
+#[derive(Parser)]
+struct KeypairFromMnemonicCommand {
+    #[clap(short='m')]
+    mnemonic: Option<String>,
 }
 
 fn main() {
@@ -43,12 +52,12 @@ fn main() {
     } else {
         match cli.command {
             Commands::Generate(c) => cmd::generate::run(c.limit, c.array),
-            Commands::Keypair(c) => cmd::keypair::run(c.private_key),
+            Commands::KeypairFromPrivate(c) => cmd::keypair_from_private::run(c.private_key),
+            Commands::KeypairFromMnemonic(c) => cmd::keypair_from_mnemonic::run(c.mnemonic),
             Commands::Split => cmd::split::run(),
         }
     }
 }
-
 
 fn print_completions<G: Generator>(gen: G, cmd: &mut Command) {
     generate(gen, cmd, cmd.get_name().to_string(), &mut io::stdout());
