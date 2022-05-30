@@ -15,30 +15,30 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    Generate(GenerateCommand),
-    KeypairFromPrivate(KeypairFromPrivateCommand),
-    KeypairFromMnemonic(KeypairFromMnemonicCommand),
-    Split,
+    New(NewCommand),
+    Private(PrivateCommand),
+    Mnemonic(MnemonicCommand),
 }
 
 /// Generate new keypair
 #[derive(Parser)]
-struct GenerateCommand {
+struct NewCommand {
     #[clap(long, default_value_t = 1)]
     limit: u16,
     #[clap(long)]
     array: bool,
 }
 
+/// Get keypair from a private key
 #[derive(Parser)]
-struct KeypairFromPrivateCommand {
+struct PrivateCommand {
     private_key: String,
 }
 
 /// Get m/44'/501'/0'/0' keypair from a mnemonic
 #[derive(Parser)]
-struct KeypairFromMnemonicCommand {
-    #[clap(short='m')]
+struct MnemonicCommand {
+    #[clap(short = 'm')]
     mnemonic: Option<String>,
 }
 
@@ -51,10 +51,9 @@ fn main() {
         print_completions(generator, &mut cmd);
     } else {
         match cli.command {
-            Commands::Generate(c) => cmd::generate::run(c.limit, c.array),
-            Commands::KeypairFromPrivate(c) => cmd::keypair_from_private::run(c.private_key),
-            Commands::KeypairFromMnemonic(c) => cmd::keypair_from_mnemonic::run(c.mnemonic),
-            Commands::Split => cmd::split::run(),
+            Commands::New(c) => cmd::new_cmd::run(c.limit, c.array),
+            Commands::Private(c) => cmd::private_cmd::run(c.private_key),
+            Commands::Mnemonic(c) => cmd::mnemonic_cmd::run(c.mnemonic),
         }
     }
 }

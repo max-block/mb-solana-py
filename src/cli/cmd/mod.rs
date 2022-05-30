@@ -1,4 +1,3 @@
-pub mod generate;
-pub mod keypair_from_private;
-pub mod split;
-pub mod keypair_from_mnemonic;
+pub mod new_cmd;
+pub mod private_cmd;
+pub mod mnemonic_cmd;
